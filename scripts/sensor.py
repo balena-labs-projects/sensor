@@ -23,6 +23,7 @@ class balenaSense():
 
         if self.device_count > 0:
             self.readfrom = "iio_sensors"
+            self.context = _create_context()
             self.sensor = IIO_READER()
 
         # Next, check if there is a 1-wire temperature sensor (e.g. DS18B20)
@@ -48,6 +49,8 @@ class balenaSense():
     def sample(self):
         if self.readfrom == 'sense-hat':
             return self.apply_offsets(self.sense_hat_reading())
+        elif self.readfrom == 'iio_sensors':
+            return self.apply_offsets(self.sensor.get_readings(self.context))
         else:
             return self.apply_offsets(self.sensor.get_readings(self.sensor))
 
