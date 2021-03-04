@@ -4,20 +4,20 @@ import threading
 import io
 import time
 
+from information import Information
+from reading import Reading
+
 class IIO_READER:
     data = None
+    #context = None
 
     def __init__(self):
         print("initializing reading")
+        #context = my_context
 
-    def get_readings(self, sensor):
-        return [
-            {
-                'measurement': 'balena-sense',
-                'fields': {
-                    'value-1': 101.1,
-                    'value-2': 102.1,
-                    'value-3': 104.5
-                }
-            }
-        ]
+    def get_readings(self, context):
+        information = Information(context)
+        information.write_information()
+        reading = Reading(context)
+        x = reading.write_reading()
+        return x
