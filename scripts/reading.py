@@ -21,9 +21,10 @@ class Reading:
 
     def write_reading(self):
         """Write the readings for the current context."""
-        reading = {}
+        reading = []
         for dev in self.context.devices:
-            reading[dev.name] = self._device_read(dev)
+            reading2 = {"measurement": dev.name, "fields": self._device_read(dev)}
+            reading.append(reading2)
 
         return reading
 
