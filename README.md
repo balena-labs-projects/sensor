@@ -28,7 +28,7 @@ The following table lists sensors that are included in balenaOS that should work
 | HTU21 | Measurement Specialties HTU21 humidity & temperature sensor | htu21 | 0x40 | Yes, works |
 | MS8607 | TE Connectivity PHT sensor | htu21 | 0x40, 0x76 | Not tested |
 | MCP342x | Microchip Technology MCP3421/2/3/4/5/6/7/8 ADC | mcp3422 | 0x68 - 0x6F | Not tested |
-| ADS1015 | Texas Instruments ADS1015 ADC | mcp3422 | 0x48 - 0x4B | Yes, NOT working |
+| ADS1015 | Texas Instruments ADS1015 ADC | ti-ads1015 | 0x48 - 0x4B | Yes, NOT working |
 | TSL4531 | TAOS TSL4531 ambient light sensors | tsl4531 | 0x29 | Not tested |
 | VEML6070 | VEML6070 UV A light sensor | veml6070 | 0x38, 0x39 | Yes, works |
 
