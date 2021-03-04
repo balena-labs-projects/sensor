@@ -2,7 +2,7 @@
 Auto-detects connected i2c sensors and publsihes data on HTTP or MQTT.
 
 ## Usage
-NOTE: This is still a POC. Start the server by going to /usr/src/app/scripts and run:
+NOTE: This is still a WIP. Start the server by going to /usr/src/app/scripts and run:
 
 `python3 sensor.py`
 
@@ -61,7 +61,7 @@ The JSON for raw sensor data will be in the following format:
 ```
 {"humidityrelative": 0, "pressure": "738.220000000", "resistance": 0, "temp": "33480"}
 ```
-If the `USE_BALENASENSE` service variable is set to `1`, the data will be in a format compatible with balenaSense:
+If the `USE_BALENASENSE` service variable is set to `1`, the data will be in a format compatible with balenaSense 2:
 ```
 [{'measurement': 'htu21', 'fields': {'humidityrelative': '29700', 'temp': '23356'}}, {'measurement': 'bmp280', 'fields': {'pressure': '99.911941406', 'temp': '23710'}}]
 ```
