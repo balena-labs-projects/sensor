@@ -11,7 +11,7 @@ You can poll the sensor data by doing `curl sensor:7575` from another container 
 ## Features
 - Uses Indusrial IO (iio) to communicate with sensors, utilizing drivers already in the kernel to talk to the sensor directly
 - Data published via mqtt and/or http
-- Provides raw sensor values or values compatible with balenaSense 2
+
 
 ## Overview/Compatibility
 The following table lists sensors that are included in balenaOS that should work with this sensor block:
@@ -59,9 +59,10 @@ If no mqtt container is present and no mqtt address is set, the webserver will b
 
 The JSON for raw sensor data will be in the following format: 
 ```
-{"humidityrelative": 0, "pressure": "738.220000000", "resistance": 0, "temp": "33480"}
-```
-If the `USE_BALENASENSE` service variable is set to `1`, the data will be in a format compatible with balenaSense 2:
-```
 [{'measurement': 'htu21', 'fields': {'humidityrelative': '29700', 'temp': '23356'}}, {'measurement': 'bmp280', 'fields': {'pressure': '99.911941406', 'temp': '23710'}}]
 ```
+Each device will have its own separate measurement, with fields for each attribute/value. This format is especially suited to use with influxDB.
+
+## Use with other blocks
+
+TBA
