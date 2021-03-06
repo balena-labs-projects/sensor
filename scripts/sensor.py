@@ -54,7 +54,7 @@ class balenaSenseHTTP(BaseHTTPRequestHandler):
     def do_GET(self):
         self._set_headers()
         measurements = balenasense.sample()
-        self.wfile.write(json.dumps(measurements[0]['fields']).encode('UTF-8'))
+        self.wfile.write(json.dumps(measurements).encode('UTF-8'))
 
     def do_HEAD(self):
         self._set_headers()
