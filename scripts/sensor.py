@@ -8,7 +8,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 import idetect
-from iio_reader import IIO_READER
+from reading import IIO_READER
 
 class balenaSense():
     readfrom = 'unset'
