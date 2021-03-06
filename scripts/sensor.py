@@ -1,7 +1,3 @@
-# This script detects for the presence of either a BME680 sensor on the I2C bus or a Sense HAT
-# The BME680 includes sensors for temperature, humidity, pressure and gas content
-# The Sense HAT does not have a gas sensor, and so air quality is approximated using temperature and humidity only.
-
 #!/usr/bin/env python3
 import sys
 import errno
@@ -26,20 +22,9 @@ class balenaSense():
             self.context = _create_context()
             self.sensor = IIO_READER()
 
-        # Next, check if there is a 1-wire temperature sensor (e.g. DS18B20)
-        if self.readfrom == 'unset':
-            if os.environ.get('BALENASENSE_1WIRE_SENSOR_ID') != None:
-                sensor_id = os.environ['BALENASENSE_1WIRE_SENSOR_ID']
-            else:
-                sensor_id = None
+        # More sensor types can be added here
+        # make sure to change the value of self.readfrom
 
-            try:
-                self.sensor = W1THERM(sensor_id)
-            except:
-                print('1-wire sensor not found')
-            else:
-                self.readfrom = '1-wire'
-                print('Using 1-wire for readings (temperature only)')
 
         # If this is still unset, no sensors were found; quit!
         if self.readfrom == 'unset':
@@ -50,25 +35,9 @@ class balenaSense():
         if self.readfrom == 'sense-hat':
             return self.apply_offsets(self.sense_hat_reading())
         elif self.readfrom == 'iio_sensors':
-            return self.apply_offsets(self.sensor.get_readings(self.context))
+            return self.sensor.get_readings(self.context)
         else:
-            return self.apply_offsets(self.sensor.get_readings(self.sensor))
-
-
-    def apply_offsets(self, measurements):
-        # Apply any offsets to the measurements before storing them in the database
-        if os.environ.get('BALENASENSE_TEMP_OFFSET') != None:
-            measurements[0]['fields']['temperature'] = measurements[0]['fields']['temperature'] + float(os.environ['BALENASENSE_TEMP_OFFSET'])
-
-        if os.environ.get('BALENASENSE_HUM_OFFSET') != None:
-            measurements[0]['fields']['humidity'] = measurements[0]['fields']['humidity'] + float(os.environ['BALENASENSE_HUM_OFFSET'])
-
-        if os.environ.get('BALENASENSE_ALTITUDE') != None:
-            # if there's an altitude set (in meters), then apply a barometric pressure offset
-            altitude = float(os.environ['BALENASENSE_ALTITUDE'])
-            measurements[0]['fields']['pressure'] = measurements[0]['fields']['pressure'] * (1-((0.0065 * altitude) / (measurements[0]['fields']['temperature'] + (0.0065 * altitude) + 273.15))) ** -5.257
-
-        return measurements
+            return self.sensor.get_readings(self.sensor)
 
 
 def _create_context():
