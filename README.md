@@ -50,6 +50,10 @@ services:
       io.balena.features.sysfs: '1'
       io.balena.features.balena-api: '1'
 ```
+### Service Variables
+`MQTT_ADDRESS` 	Provide the address of an MQTT broker for the block to publish data to. If this variable is not set and a container on the device is named mqtt, it will publish to that instead. Either disables the internal webserver unless `ALWAYS_USE_WEBSERVER` is set to True.
+
+`ALWAYS_USE_WEBSERVER` 	Set to True to enable the internal webserver even when it is automatically disabled due to the detection of mqtt. Default value is 0.
 
 ## Data
 
