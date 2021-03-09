@@ -36,12 +36,10 @@ class Reading:
         for channel in dev.channels:
             if not channel.output:
                 chan = channel.id
-                print("chan:{0}".format(chan))
                 if len(channel.attrs) > 0:
                     for channel_attr in channel.attrs:
                         if channel_attr == "input" or channel_attr == "raw":
                             reads[chan] = self._channel_attribute_value(channel, channel_attr)
-            #self._channel_info(channel)
 
         return reads
 
@@ -57,15 +55,12 @@ class Reading:
 
 class IIO_READER:
     data = None
-    #context = None
 
     def __init__(self):
         print("initializing reading")
-        #context = my_context
 
     def get_readings(self, context):
         information = Information(context)
-        information.write_information()
         reading = Reading(context)
         x = reading.write_reading()
         return x
