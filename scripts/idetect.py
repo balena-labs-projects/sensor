@@ -145,11 +145,23 @@ def detect_iio_sensors():
                 print("Unloading module {0} as {1}.".format(x, del_drivers[x]))
                 subprocess.run(["modprobe", "-r", x])
 
+        # Remove unrecognized devices
+        print("Active: {0}".format(active))
+        print("Keys: {0}".format(devices.keys()))
+        new_active = []
+        for x in active:
+            if x in devices.keys():
+                new_active.append(x)
+            else:
+                print("Device at {0} not in known supported drivers.".format(hex(x)))
+
+        print("New active: {0}".format(new_active))
+
         # Now, load all the devices found
         print("======== Loading devices found... ========")
         subprocess.run(["modprobe", "crc8"])
         subprocess.run(["modprobe", "industrialio"])
-        for device in active:
+        for device in new_active:
             if devices[device] != "multiple":
                 print("Loading device {0} on address {1}.".format(devices[device], hex(device)))
                 subprocess.run(["modprobe", devices[device]])
@@ -185,7 +197,8 @@ def detect_iio_sensors():
                 print("Loading device {0} (chip ID {1}) on address {2}.".format(mod_device, chip_id, hex(device)))
                 new_device = "echo {0} {1} > /sys/bus/i2c/devices/i2c-1/new_device".format(load_device, hex(device))
                 os_out = os.system(new_device)
-                print("New device exit code: {0}".format(os_out))
+                if os_out > 0:
+                    print("New device exit code: {0}".format(os_out))
 
     bus.close()
     bus = None
