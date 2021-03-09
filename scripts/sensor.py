@@ -6,14 +6,33 @@ import iio
 import json
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from balena import Balena
+import paho.mqtt.client as mqtt
+import socket
+import threading
 
 import idetect
 from reading import IIO_READER
+
+# Use the sdk to get services
+def mqtt_detect():
+    print("Using API to detect services...")
+    balena = Balena()
+    auth_token = os.environ.get('BALENA_API_KEY')
+    balena.auth.login_with_token(auth_token)
+    device_id = os.environ.get('BALENA_DEVICE_UUID')
+    device = balena.models.device.get_with_service_details(device_id, False)
+    for service in device['current_services']:
+        if service == "mqtt":
+            print("Found a service on this device named 'mqtt'")
+            return True
+    return False
 
 class balenaSense():
     readfrom = 'unset'
 
     def __init__(self):
+        print("Initializing balenaSense()")
         # First, use iio to detect supported sensors
         self.device_count = idetect.detect_iio_sensors()
 
@@ -44,29 +63,54 @@ def _create_context():
 
     return iio.Context()
 
+# Simple webserver
+def background_web(server_socket):
+    balenasense = balenaSense()
+    while True:
+        # Wait for client connections
+        client_connection, client_address = server_socket.accept()
 
-class balenaSenseHTTP(BaseHTTPRequestHandler):
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
+        # Get the client request
+        request = client_connection.recv(1024).decode()
+        print(request)
 
-    def do_GET(self):
-        self._set_headers()
-        measurements = balenasense.sample()
-        self.wfile.write(json.dumps(measurements).encode('UTF-8'))
-
-    def do_HEAD(self):
-        self._set_headers()
+        # Send HTTP response
+        response = 'HTTP/1.0 200 OK\n\n'+ json.dumps(balenasense.sample())
+        client_connection.sendall(response.encode())
+        client_connection.close()
 
 
 if __name__ == "__main__":
 
-    # Start the server to answer requests for readings
-    balenasense = balenaSense()
+    mqtt_address = os.getenv('MQTT_ADDRESS', 'none')
+    enable_webserver = os.getenv('ALWAYS_USE_WEBSERVER', 0)
+
+    if mqtt_detect() and mqtt_address == "none":
+        mqtt_address = "mqtt"
+
+    if mqtt_address != "none":
+        print("Starting mqtt client, publishing to {0}:1883".format(mqtt_address))
+        client = mqtt.Client()
+        client.connect(mqtt_address, 1883, 60)
+        client.loop_start()
+        balenasense = balenaSense()
+
+    if enable_webserver == "True":
+        SERVER_HOST = '0.0.0.0'
+        SERVER_PORT = 7575
+
+        # Create socket
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind((SERVER_HOST, SERVER_PORT))
+        server_socket.listen(1)
+        print("Web server listening on port {0}...".format(SERVER_PORT))
+
+        t = threading.Thread(target=background_web, args=(server_socket,))
+        t.start()
 
     while True:
-        server_address = ('', 7575)
-        httpd = HTTPServer(server_address, balenaSenseHTTP)
-        print('Sensor HTTP server running')
-        httpd.serve_forever()
+        if mqtt_address != "none":
+            client.publish('sensor_data', json.dumps(balenasense.sample()))
+        time.sleep(8)
+
