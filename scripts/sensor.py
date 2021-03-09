@@ -94,6 +94,8 @@ if __name__ == "__main__":
         client.connect(mqtt_address, 1883, 60)
         client.loop_start()
         balenasense = balenaSense()
+    else:
+        enable_webserver = "True"
 
     if enable_webserver == "True":
         SERVER_HOST = '0.0.0.0'
