@@ -32,7 +32,7 @@ class balenaSense():
     readfrom = 'unset'
 
     def __init__(self):
-        print("Initializing balenaSense()")
+        
         # First, use iio to detect supported sensors
         self.device_count = idetect.detect_iio_sensors()
 
