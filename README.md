@@ -41,7 +41,7 @@ To use this image, create a container in your `docker-compose.yml` file as shown
 ```
 services:
   sensor:
-    image: balenablocks/sensor:raspberrypi4-64 # Use alanb128/sensor:latest for testing
+    image: balenablocks/sensor:raspberrypi4-64 # Use alanb128/sensor-block:latest for testing
     privileged: true
     cap_add:
       - ALL
