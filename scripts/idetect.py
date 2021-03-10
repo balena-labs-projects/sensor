@@ -139,15 +139,15 @@ def detect_iio_sensors():
         dd = []
         [dd.append(x) for x in d if x not in dd]
         # find in dict
-        print("Currently loaded modules: {0}".format(dd))
+        #print("Currently loaded modules: {0}".format(dd))
         for x in dd:
             if x in del_drivers:
                 print("Unloading module {0} as {1}.".format(x, del_drivers[x]))
                 subprocess.run(["modprobe", "-r", x])
 
         # Remove unrecognized devices
-        print("Active: {0}".format(active))
-        print("Keys: {0}".format(devices.keys()))
+        #print("Active: {0}".format(active))
+        #print("Keys: {0}".format(devices.keys()))
         new_active = []
         for x in active:
             if x in devices.keys():
@@ -202,6 +202,6 @@ def detect_iio_sensors():
 
     bus.close()
     bus = None
-    print("Found {0} device(s)".format(device_count))
+    print("Loaded {0} of {1} device(s) found".format(len(new_active), device_count))
 
-    return device_count
+    return len(new_active)
