@@ -67,16 +67,14 @@ The http data defaults to only be available to other containers in the applicati
 
 The JSON for raw sensor data is available in one of two formats and is determined by the `COLLAPSE_FIELDS` service variable. The default value of `0` (zero) causes each sensor to output a separate measurement:
 ```
+[{'measurement': 'htu21', 'fields': {'humidityrelative': '29700', 'temp': '23356'}}, {'measurement': 'bmp280', 'fields': {'pressure': '99.911941406', 'temp': '23710'}}]
+```
 
 
 `RAW_VALUES` Default value of `1` provides raw field names and values from sensors. Setting this to `0` standardizes the field names and adjusts the values as needed. See the file `transformers.py` for the full set of modifcations.
 
-`COLLAPSE_FIELDS` The default value of `0` (zero) causes each sensor to output a separate measurement. Setting this to `1` collapses all fields into one list.
 
-The JSON for raw sensor data will be in the following format: 
-```
-[{'measurement': 'htu21', 'fields': {'humidityrelative': '29700', 'temp': '23356'}}, {'measurement': 'bmp280', 'fields': {'pressure': '99.911941406', 'temp': '23710'}}]
-```
+
 Each device will have its own separate measurement, with fields for each attribute/value. This format is especially suited to use with influxDB.
 
 ## Use with other blocks
