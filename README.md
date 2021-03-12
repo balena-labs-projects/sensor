@@ -1,20 +1,14 @@
 # sensor-block
 Auto-detects connected i2c sensors and publsihes data on HTTP or MQTT.
 
-## Usage
-NOTE: This is still a WIP. Start the server by going to /usr/src/app/scripts and run:
-
-`python3 sensor.py`
-
-You can poll the sensor data by doing `curl sensor:7575` from another container in the application.
-
 ## Features
 - Uses Indusrial IO (iio) to communicate with sensors, utilizing drivers already in the kernel to talk to the sensor directly
 - Data published via mqtt and/or http
-
+- Provides raw sensor data or "prettified" data you can manipulate
+- Provides json output either per sensor or collapsed into one measurement 
 
 ## Overview/Compatibility
-The following table lists sensors that are included in balenaOS that should work with this sensor block:
+The following table lists sensors that are included in balenaOS that should work with this sensor block. As we continue to test sensors and improve the block, more sensors should be supported and the chart will be updated accordingly.
 
 | Sensor Model | Sensor Name | Driver Name | Address(es) | Tested? |
 | ------------ | ----------- | ----------- | ----------- | ------- |
@@ -53,9 +47,13 @@ services:
       - '7575'  # Only needed if using webserver
 ```
 ### Service Variables
-`MQTT_ADDRESS` 	Provide the address of an MQTT broker for the block to publish data to. If this variable is not set and a container on the device is named mqtt, it will publish to that instead. Either disables the internal webserver unless `ALWAYS_USE_WEBSERVER` is set to True.
+`MQTT_ADDRESS` 	Provide the address of an MQTT broker for the block to publish data to. If this variable is not set and a container on the device is named mqtt, it will publish to that instead. Either setting this or having a container named mqtt disables the internal webserver unless `ALWAYS_USE_WEBSERVER` is set to True.
 
 `ALWAYS_USE_WEBSERVER` 	Set to True to enable the internal webserver even when it is automatically disabled due to the detection of mqtt. Default value is 0.
+
+`RAW_VALUES` Default value of `1` provides raw field names and values from sensors. Setting this to `0` standardizes the field names and adjusts the values as needed. See the file `transformers.py` for the full set of modifcations.
+
+`COLLAPSE_FIELDS` The default value of `0` (zero) causes each sensor to output a separate measurement. Setting this to `1` collapses all fields into one list.
 
 ## Data
 
