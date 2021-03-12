@@ -4,11 +4,15 @@ Auto-detects connected i2c sensors and publsihes data on HTTP or MQTT.
 ## Features
 - Uses Indusrial IO (iio) to communicate with sensors, utilizing drivers already in the kernel to talk to the sensor directly
 - Data published via mqtt and/or http
-- Provides raw sensor data or "prettified" data you can manipulate
-- Provides json output either per sensor or collapsed into one measurement 
+- Provides raw sensor data or "tranforms" the sensor data into a more standardized format 
+- json output can either be one measurement per sensor or all sensor fields in one list 
 
 ## Overview/Compatibility
-The following table lists sensors that are included in balenaOS that should work with this sensor block. As we continue to test sensors and improve the block, more sensors should be supported and the chart will be updated accordingly.
+This block utilizes the [Linux Industrial I/O Subsystem](https://wiki.analog.com/software/linux/docs/iio/iio) ("iio") which is a kernel subsystem that allows for ease of implementing drivers for sensors and other similar devices such as ADCs, DACs, etc.  You can see a list of available iio drivers [here](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/iio?h=linux-5.4.y) but in order to save space, most OSes do not include all these drivers. The easiest way to check if your board supports a driver is to use the modinfo command on a running device. For instance:
+```
+modinfo ti-ads1015
+```
+This command searches the running kernel for all the drivers it includes and prints out a description of any that are found to match. BalenaOS for Raspberry Pi 3 includes a small subset of these drivers which are listed in the table below. As we continue to test sensors and improve the block, more sensors should be supported and the chart will be updated accordingly.
 
 | Sensor Model | Sensor Name | Driver Name | Address(es) | Tested? |
 | ------------ | ----------- | ----------- | ----------- | ------- |
