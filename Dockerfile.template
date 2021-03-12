@@ -32,14 +32,14 @@ ENV PYTHONPATH=$PYTHONPATH:/usr/lib/python3.7/site-packages
 
 # Install python requirements
 RUN \
-    python3 -m pip install smbus2 balena-sdk w1thermsensor enviroplus RPi.GPIO
+    python3 -m pip install smbus2 balena-sdk w1thermsensor enviroplus RPi.GPIO paho-mqtt
 
 WORKDIR /usr/src/app
-COPY ./scripts ./scripts
-#COPY ./entry.sh /usr/src/app/
-#RUN chmod +x /usr/src/app/entry.sh
+COPY *.py ./
+
 
 # More information:
 # https://wiki.analog.com/resources/tools-software/linux-software/libiio
 
-CMD ["sleep", "infinity"]
+CMD ["python3", "sensor.py"]
+
