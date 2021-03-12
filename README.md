@@ -52,7 +52,7 @@ services:
 ```
 ### Publishing Data
 
-The sensor data is available in json format either as an mqtt payload or via the built-in webserver. To use mqtt, either include a container in your application that is named mqtt or provide an address for the `MQTT_ADDRESS` service variable (see below.)
+The sensor data is available in json format either as an mqtt payload and/or via the built-in webserver. To use mqtt, either include a container in your application that is named mqtt or provide an address for the `MQTT_ADDRESS` service variable (see below.)
 
 If no mqtt container is present and no mqtt address is set, the webserver will be available on port 7575. To force the webserver to be active, set the `ALWAYS_USE_WEBSERVER` service variable to True.
 
@@ -70,12 +70,21 @@ The JSON for raw sensor data is available in one of two formats and is determine
 [{'measurement': 'htu21', 'fields': {'humidityrelative': '29700', 'temp': '23356'}}, {'measurement': 'bmp280', 'fields': {'pressure': '99.911941406', 'temp': '23710'}}]
 ```
 
+Changing `COLLAPSE_FIELDS` to `1` collapses all of the field values into one list like this:
+```
+{'humidityrelative': '29700', 'temp': '23356', 'pressure': '99.911941406'}
+```
+Note that if two sensors output the same field name, it will only show up once in the list from one of the sensors. This feature is best used when the field names from sensors do not overlap.
 
-`RAW_VALUES` Default value of `1` provides raw field names and values from sensors. Setting this to `0` standardizes the field names and adjusts the values as needed. See the file `transformers.py` for the full set of modifcations.
+The above examples display the raw data from the sensor as exposed by the driver, which is the default setting for the block. In many cases, the values and names need transformations to be useful. You can change the `RAW_VALUES` service variable from the default value of `1` to `0` (zero) to output transformed data instead. All the transformations are defined per-sensor in the `transformations.py` file which you can edit to your needs. We've included some basic ones for you. For example, here is the raw output of a bme680:
+```
+{"humidityrelative": 35.524, "pressure": 1005.48, "resistance": 52046.0, "temp": 24620.0}
+```
+Here is the transformed output with `RAW_VALUES` set to `0`:
+```
+{"pressure": 1005.4, "resistance": 65454.0, "humidity": 35.541, "temperature": 24.54}
+```
 
-
-
-Each device will have its own separate measurement, with fields for each attribute/value. This format is especially suited to use with influxDB.
 
 ## Use with other blocks
 
