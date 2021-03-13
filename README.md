@@ -43,7 +43,7 @@ This command searches the running kernel for all the drivers it includes and pri
 | BME280 | Bosch Sensortec BME280 sensor | bmp280 | 0x76, 0x77 | Yes, works |
 | HDC1000 | TI HDC100x relative humidity and temperature sensor | hdc100x | 0x40 - 0x43 | Not tested |
 | HTU21 | Measurement Specialties HTU21 humidity & temperature sensor | htu21 | 0x40 | Yes, works |
-| MS8607 | TE Connectivity PHT sensor | htu21 | 0x40, 0x76 | Not tested |
+| MS8607 | TE Connectivity PHT sensor | htu21 | 0x40, 0x76 | Yes, works partially (no pressure reading) |
 | MCP342x | Microchip Technology MCP3421/2/3/4/5/6/7/8 ADC | mcp3422 | 0x68 - 0x6F | Not tested |
 | ADS1015 | Texas Instruments ADS1015 ADC | ti-ads1015 | 0x48 - 0x4B | Yes, NOT working |
 | TSL4531 | TAOS TSL4531 ambient light sensors | tsl4531 | 0x29 | Not tested |
