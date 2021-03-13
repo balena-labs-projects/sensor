@@ -7,6 +7,25 @@ Auto-detects connected i2c sensors and publsihes data on HTTP or MQTT.
 - Provides raw sensor data or "tranforms" the sensor data into a more standardized format 
 - json output can either be one measurement per sensor or all sensor fields in one list 
 
+## Usage
+
+**Docker compose file**
+
+To use this image, create a container in your `docker-compose.yml` file as shown below:
+
+```
+services:
+  sensor:
+    image: balenablocks/sensor:raspberrypi4-64 # Use alanb128/sensor-block:latest for testing
+    privileged: true
+    labels:
+      io.balena.features.kernel-modules: '1'
+      io.balena.features.sysfs: '1'
+      io.balena.features.balena-api: '1'
+    expose:
+      - '7575'  # Only needed if using webserver
+```
+
 ## Overview/Compatibility
 This block utilizes the [Linux Industrial I/O Subsystem](https://wiki.analog.com/software/linux/docs/iio/iio) ("iio") which is a kernel subsystem that allows for ease of implementing drivers for sensors and other similar devices such as ADCs, DACs, etc.  You can see a list of available iio drivers [here](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/iio?h=linux-5.4.y) but in order to save space, most OSes do not include all these drivers. The easiest way to check if your board supports a driver is to use the modinfo command on a running device. For instance:
 ```
@@ -30,26 +49,7 @@ This command searches the running kernel for all the drivers it includes and pri
 | TSL4531 | TAOS TSL4531 ambient light sensors | tsl4531 | 0x29 | Not tested |
 | VEML6070 | VEML6070 UV A light sensor | veml6070 | 0x38, 0x39 | Yes, works |
 
-## Usage
 
-**Docker compose file**
-
-To use this image, create a container in your `docker-compose.yml` file as shown below:
-
-```
-services:
-  sensor:
-    image: balenablocks/sensor:raspberrypi4-64 # Use alanb128/sensor-block:latest for testing
-    privileged: true
-    cap_add:
-      - ALL
-    labels:
-      io.balena.features.kernel-modules: '1'
-      io.balena.features.sysfs: '1'
-      io.balena.features.balena-api: '1'
-    expose:
-      - '7575'  # Only needed if using webserver
-```
 ### Publishing Data
 
 The sensor data is available in json format either as an mqtt payload and/or via the built-in webserver. To use mqtt, either include a container in your application that is named mqtt or provide an address for the `MQTT_ADDRESS` service variable (see below.)
