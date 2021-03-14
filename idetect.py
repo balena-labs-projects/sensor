@@ -171,6 +171,7 @@ def detect_iio_sensors():
                     print("New device {0} exit code: {1}".format(hex(device), os_out))
             else:
                 load_device = ""
+                mod_device = ""
                 if device == 57:
                     if read_chip_id(bus, device, 146) == 0xAB:
                         mod_device = "apds9960"
@@ -178,27 +179,31 @@ def detect_iio_sensors():
                         mod_device = "veml6070"
 
                 elif device == 64:
+                    #print("hello64")
                     chip_id = read_chip_id(bus, device, 255)
+                    #print("chipid = {0}".format(chip_id))
                     if chip_id == 0x1000 or chip_id == 0x1050:
                         mod_device = "hdc100x"
                     else:
                         mod_device = "htu21"
 
-                elif (device == 118) or (device == 119):
+                elif ((device == 118) and (64 not in new_active)) or (device == 119):
                    load_device = bosch_chip_id[read_chip_id(bus, device, 208)]
                    if load_device == "bme680":
                        mod_device = "bme680-i2c"
                    else:
                        mod_device = "bmp280-i2c"
 
-                if load_device == "":
-                    load_device = mod_device
-                subprocess.run(["modprobe", mod_device])
-                print("Loading device {0} (chip ID {1}) on address {2}.".format(mod_device, chip_id, hex(device)))
-                new_device = "echo {0} {1} > /sys/bus/i2c/devices/i2c-1/new_device".format(load_device, hex(device))
-                os_out = os.system(new_device)
-                if os_out > 0:
-                    print("New device exit code: {0}".format(os_out))
+                if mod_device != "":
+                    if load_device == "":
+                        load_device = mod_device
+                    subprocess.run(["modprobe", mod_device])
+                    print("Loading device {0} (chip ID {1}) on address {2}.".format(mod_device, chip_id, hex(device)))
+                    new_device = "echo {0} {1} > /sys/bus/i2c/devices/i2c-1/new_device".format(load_device, hex(device))
+                    os_out = os.system(new_device)
+                    if os_out > 0:
+                        print("New device exit code: {0}".format(os_out))
+
 
     bus.close()
     bus = None
