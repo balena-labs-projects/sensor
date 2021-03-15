@@ -88,7 +88,7 @@ Here is the transformed output with `RAW_VALUES` set to `0`:
 
 ## Use with other blocks
 
-The sensor block works well with our connector block and dashboard block. You can replicate most of the functionality of balenaSense by just combining these blocks without any additinal programming, such as in the example below:
+The sensor block works well with our [connector block](https://github.com/balenablocks/connector) and [dashboard block](https://github.com/balenablocks/dashboard). You can replicate most of the functionality of [balenaSense](https://github.com/balenalabs/balena-sense) by just combining these blocks without any additinal programming, such as in the example below. Simply attach compatible sensors to a Raspberry Pi 3, push this application, and instantly get a dashboard for your data:
 
 ```
 version: '2'
