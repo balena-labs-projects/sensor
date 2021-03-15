@@ -16,7 +16,7 @@ To use this image, create a container in your `docker-compose.yml` file as shown
 ```
 services:
   sensor:
-    image: balenablocks/sensor:raspberrypi4-64 # Use alanb128/sensor-block:latest for testing
+    image: balenablocks/sensor:raspberrypi3 # Use alanb128/sensor-block:latest for testing
     privileged: true
     labels:
       io.balena.features.kernel-modules: '1'
@@ -88,4 +88,41 @@ Here is the transformed output with `RAW_VALUES` set to `0`:
 
 ## Use with other blocks
 
-TBA
+The sensor block works well with our connector block and dashboard block. You can replicate most of the functionality of balenaSense by just combining these blocks without any additinal programming, such as in the example below:
+
+```
+version: '2'
+volumes:
+    sense-data:
+    dashboard-data:
+services:
+  influxdb:
+    restart: always
+    image: arm32v7/influxdb:1.7
+    volumes:
+      - 'sense-data:/data'
+  dashboard:
+    image: balenablocks/dashboard:raspberrypi3
+    restart: always
+    volumes:
+        - 'dashboard-data:/data'
+    ports:
+        - '80'
+  sensor:
+    image: balenablocks/sensor:raspberrypi3 # for now use alanb128/sensor-block:latest
+    privileged: true
+    labels:
+      io.balena.features.kernel-modules: '1'
+      io.balena.features.sysfs: '1'
+      io.balena.features.balena-api: '1'
+    expose:
+      - '7575'
+  connector:
+    image: balenablocks/connector:raspberrypi3
+    restart: always
+    labels:
+      io.balena.features.balena-api: '1' # necessary to discover services
+    privileged: true # necessary to change container hostname
+    ports:
+      - "8080" # only necessary if using ExternalHttpListener (see below)
+  ```
