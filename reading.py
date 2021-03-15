@@ -44,8 +44,8 @@ class Reading:
                 else:
                     # send the device name and fields to the transform function
                     new_fields = device_transform(dev.name, device_fields)
-                    reading2 = {"measurement": dev.name, "fields": new_fields}
-                    reading.append(reading2)
+                reading2 = {"measurement": dev.name, "fields": new_fields}
+                reading.append(reading2)
 
         return reading
 
