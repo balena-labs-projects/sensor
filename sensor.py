@@ -15,6 +15,7 @@ import idetect
 from reading import IIO_READER
 from information import Information
 
+
 # Use the sdk to get services
 def mqtt_detect():
     print("Using API to detect services...")
@@ -84,6 +85,7 @@ def background_web(server_socket):
         client_connection.close()
 
 
+
 if __name__ == "__main__":
 
     mqtt_address = os.getenv('MQTT_ADDRESS', 'none')
@@ -129,3 +131,4 @@ if __name__ == "__main__":
         if mqtt_address != "none":
             client.publish('sensor_data', json.dumps(balenasense.sample()))
         time.sleep(8)
+
