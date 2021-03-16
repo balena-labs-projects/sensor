@@ -1,4 +1,5 @@
 
+
 def device_transform(device_name, fields):
 
     if device_name == "bme680":
@@ -22,6 +23,9 @@ def device_transform(device_name, fields):
                 x = fields[field]
                 fields[field] = x/1000 
                 fields["temperature"] = fields.pop("temp")
+            elif field == "pressure":
+                x = fields[field]
+                fields[field] = x * 10
 
     elif device_name == "bmp280":
         print("Transforming {0} value(s)...".format(device_name))
