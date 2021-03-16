@@ -61,16 +61,18 @@ bosch_chip_id = {
 }
 
 def read_chip_id(bus, device, loc):
-    chip_id = 0
+    chip_id = -1
     try:
         chip_id = bus.read_byte_data(device, loc)
-    except OSError as e:
-        if e.errno == 16:
-            print("While reading chip ID: Device at address {0} busy!".format(device))
-        else:
-            print("While reading chip ID: Could not read chip data from device {0}".format(device))
-    except Exception as e: # exception if read_byte fails
-            print("While reading chip ID: Error unk: {0} on address {1}".format(e, hex(device)))
+    except Exception as e:
+            print("Error while reading chip ID of device at address {0}: {1}".format(e, hex(device)))
+    
+    if chip_id == -1:  # Wait a tiny bit and try one more time
+        time.sleep(2)
+        try:
+            chip_id = bus.read_byte_data(device, loc)
+        except Exception as e:
+            print("Error again while reading chip ID of device at address {0}: {1}".format(e, hex(device)))
 
     return chip_id
 
@@ -161,6 +163,7 @@ def detect_iio_sensors():
         print("======== Loading devices found... ========")
         subprocess.run(["modprobe", "crc8"])
         subprocess.run(["modprobe", "industrialio"])
+        new_active_count = 0
         for device in new_active:
             if devices[device] != "multiple":
                 print("Loading device {0} on address {1}.".format(devices[device], hex(device)))
@@ -169,6 +172,7 @@ def detect_iio_sensors():
                 os_out = os.system(new_device)
                 if os_out > 0:
                     print("New device {0} exit code: {1}".format(hex(device), os_out))
+                new_active_count = new_active_count + 1
             else:
                 load_device = ""
                 mod_device = ""
@@ -188,11 +192,13 @@ def detect_iio_sensors():
                         mod_device = "htu21"
 
                 elif ((device == 118) and (64 not in new_active)) or (device == 119):
-                   load_device = bosch_chip_id[read_chip_id(bus, device, 208)]
-                   if load_device == "bme680":
-                       mod_device = "bme680-i2c"
-                   else:
-                       mod_device = "bmp280-i2c"
+                   chip_id = read_chip_id(bus, device, 208)
+                   if chip_id > 0:
+                       load_device = bosch_chip_id[read_chip_id(bus, device, 208)]
+                       if load_device == "bme680":
+                           mod_device = "bme680-i2c"
+                       else:
+                           mod_device = "bmp280-i2c"
 
                 if mod_device != "":
                     if load_device == "":
@@ -203,10 +209,15 @@ def detect_iio_sensors():
                     os_out = os.system(new_device)
                     if os_out > 0:
                         print("New device exit code: {0}".format(os_out))
+                    new_active_count = new_active_count + 1
 
+        print("Loaded {0} of {1} device(s) found".format(new_active_count, device_count))
+        bus.close()
+        bus = None
+        return new_active_count
 
-    bus.close()
-    bus = None
-    print("Loaded {0} of {1} device(s) found".format(len(new_active), device_count))
-
-    return len(new_active)
+    else:  # no devices found
+        bus.close()
+        bus = None
+        return 0
+    
