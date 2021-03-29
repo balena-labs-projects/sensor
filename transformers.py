@@ -9,7 +9,10 @@ def device_transform(device_name, fields):
                 fields["humidity"] = fields.pop("humidityrelative")
             elif field == "temp":
                 x = fields[field]
-                fields[field] = x/1000 
+                if os.getenv('TEMP_UNIT', 'C') = 'F':
+                    fields[field]= ((x/1000) * 1.8) + 32
+                else:
+                    fields[field] = x/1000
                 fields["temperature"] = fields.pop("temp")
 
     elif device_name == "bme280":
@@ -21,7 +24,10 @@ def device_transform(device_name, fields):
                 fields["humidity"] = fields.pop("humidityrelative")
             elif field == "temp":
                 x = fields[field]
-                fields[field] = x/1000 
+                if os.getenv('TEMP_UNIT', 'C') = 'F':
+                    fields[field]= ((x/1000) * 1.8) + 32
+                else:
+                    fields[field] = x/1000 
                 fields["temperature"] = fields.pop("temp")
             elif field == "pressure":
                 x = fields[field]
@@ -32,7 +38,10 @@ def device_transform(device_name, fields):
         for field in fields:
             if field == "temp":
                 x = fields[field]
-                fields[field] = x/1000 
+                if os.getenv('TEMP_UNIT', 'C') = 'F':
+                    fields[field]= ((x/1000) * 1.8) + 32
+                else:
+                    fields[field] = x/1000 
                 fields["temperature"] = fields.pop("temp")
             elif field == "pressure":
                 x = fields[field]
@@ -43,7 +52,10 @@ def device_transform(device_name, fields):
         for field in fields:
             if field == "temp":
                 x = fields[field]
-                fields[field] = x/1000 
+                if os.getenv('TEMP_UNIT', 'C') = 'F':
+                    fields[field]= ((x/1000) * 1.8) + 32
+                else:
+                    fields[field] = x/1000 
                 fields["temperature"] = fields.pop("temp")
             if field == "humidityrelative":
                 x = fields[field]
