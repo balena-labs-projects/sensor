@@ -85,6 +85,7 @@ Here is the transformed output with `RAW_VALUES` set to `0`:
 {"pressure": 1005.4, "resistance": 65454.0, "humidity": 35.541, "temperature": 24.54}
 ```
 
+When using transformed data outputs, you can change the temperature field from Celsius to Farenheit by setting the `TEMP_UNIT` variable to `F` (the default is `C`)
 
 ## Use with other blocks
 
