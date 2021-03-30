@@ -1,0 +1,23 @@
+name: sensor
+description: >-
+  detect and publish data from supported i2c sensors on the Raspberry Pi via http and/or mqtt
+version: 1.0.0
+type: sw.application
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: 'https://github.com/balenablocks/sensor'
+  logo:
+    type: blob.asset
+    data:
+      url: 'https://raw.githubusercontent.com/balenablocks/sensor/master/logo.png'
+data:
+  defaultDeviceType: raspberrypi3
+  supportedDeviceTypes:
+    - raspberry-pi
+    - raspberrypi4-64
+    - fincm3
+    - raspberrypi3
+    - raspberrypi3-64
+    - raspberrypi400-64
