@@ -32,7 +32,7 @@ ENV PYTHONPATH=$PYTHONPATH:/usr/lib/python3.7/site-packages
 
 # Install python requirements
 RUN \
-    python3 -m pip install smbus2 balena-sdk w1thermsensor enviroplus RPi.GPIO paho-mqtt
+    python3 -m pip install smbus2 balena-sdk paho-mqtt
 
 WORKDIR /usr/src/app
 COPY *.py ./
