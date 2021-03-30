@@ -1,0 +1,12 @@
+version: '2'
+services:
+  sensor:
+    image: balenablocks/sensor
+    privileged: true
+    labels:
+      io.balena.features.kernel-modules: '1'
+      io.balena.features.sysfs: '1'
+      io.balena.features.balena-api: '1'
+    expose:
+      - '7575'
+      
