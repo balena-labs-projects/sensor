@@ -1,4 +1,4 @@
-
+import os
 
 def device_transform(device_name, fields):
 
