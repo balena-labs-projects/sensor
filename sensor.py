@@ -6,7 +6,7 @@ import iio
 import json
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from balena import Balena
+#from balena import Balena
 import paho.mqtt.client as mqtt
 import socket
 import threading
@@ -16,18 +16,9 @@ from reading import IIO_READER
 from information import Information
 
 
-# Use the sdk to get services
+# Use the sdk to get services (eventually)
 def mqtt_detect():
-    print("Using API to detect services...")
-    balena = Balena()
-    auth_token = os.environ.get('BALENA_API_KEY')
-    balena.auth.login_with_token(auth_token)
-    device_id = os.environ.get('BALENA_DEVICE_UUID')
-    device = balena.models.device.get_with_service_details(device_id, False)
-    for service in device['current_services']:
-        if service == "mqtt":
-            print("Found a service on this device named 'mqtt'")
-            return True
+    
     return False
 
 class balenaSense():
@@ -93,10 +84,6 @@ if __name__ == "__main__":
 
     if mqtt_detect() and mqtt_address == "none":
         mqtt_address = "mqtt"
-
-    #TEST - REMOVE THESE LINES
-    #mqtt_address = "192.168.1.65"
-    #enable_webserver = "True"
 
     if mqtt_address != "none":
         print("Starting mqtt client, publishing to {0}:1883".format(mqtt_address))
