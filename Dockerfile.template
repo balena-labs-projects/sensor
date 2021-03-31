@@ -1,45 +1,18 @@
-FROM balenalib/%%BALENA_MACHINE_NAME%%-debian:buster
+FROM balenalib/%%BALENA_ARCH%%-debian-python
+
+RUN install_packages \
+    nano \
+    i2c-tools \
+    kmod \
+    libiio0 \
+    libiio-utils \
+    python3-libiio
 
 WORKDIR /usr/src/app
 
-# Install dependencies for libiio
-RUN \
-    apt-get update && apt-get install -y libxml2 libxml2-dev bison flex libcdk5-dev git cmake build-essential
+RUN pip3 install smbus2 paho-mqtt
 
-RUN \
-    apt-get install python3 python3-pip python3-setuptools \
-    python3-dev libffi-dev libssl-dev
-
-# Intall libraries to access connected devices
-RUN \
-    apt-get install -y libaio-dev libusb-1.0-0-dev libserialport-dev libxml2-dev libavahi-client-dev
-
-#  Build and install libini to have local context attributes.
-RUN \
-    git clone https://github.com/pcercuei/libini.git && \
-    cd libini && \
-    mkdir build && cd build && cmake ../ && make && make install
-
-# Build libiio and install. Note requirement for 
-# cmake flag to enable the python bindings during installation
-RUN \
-    git clone https://github.com/analogdevicesinc/libiio.git && \
-    cd libiio && \
-    cmake ./ -DPYTHON_BINDINGS=ON && make all && make install
-
-# Update the path so Python can find the bindings    
-ENV PYTHONPATH=$PYTHONPATH:/usr/lib/python3.7/site-packages
-
-# Install python requirements
-RUN \
-    python3 -m pip install smbus2 balena-sdk paho-mqtt
-
-WORKDIR /usr/src/app
 COPY *.py ./
-
-
-# More information:
-# https://wiki.analog.com/resources/tools-software/linux-software/libiio
 
 CMD ["python3", "sensor.py"]
 
