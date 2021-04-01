@@ -16,7 +16,7 @@ To use this image, create a container in your `docker-compose.yml` file as shown
 ```
 services:
   sensor:
-    image: balenablocks/sensor:raspberrypi3 # Use alanb128/sensor-block:latest for testing
+    image: balenablocks/sensor
     privileged: true
     labels:
       io.balena.features.kernel-modules: '1'
@@ -52,16 +52,11 @@ This command searches the running kernel for all the drivers it includes and pri
 
 ### Publishing Data
 
-The sensor data is available in json format either as an mqtt payload and/or via the built-in webserver. To use mqtt, either include a container in your application that is named mqtt or provide an address for the `MQTT_ADDRESS` service variable (see below.)
+The sensor data is available in json format either as an mqtt payload and/or via the built-in webserver. To use mqtt, provide an address for the `MQTT_ADDRESS` service variable (see below.)
 
-If no mqtt container is present and no mqtt address is set, the webserver will be available on port 7575. To force the webserver to be active, set the `ALWAYS_USE_WEBSERVER` service variable to True.
+If no mqtt address is set, the webserver will be available on port 7575. To force the webserver to be active even with mqtt, set the `ALWAYS_USE_WEBSERVER` service variable to True.
 
-The http data defaults to only be available to other containers in the application via `sensor:7575` - if you want this to be available externally, you'll need to map port 7575 to an external port in your docker-compose file. To configure http/mqtt, use the following service variables:
-
-`MQTT_ADDRESS` 	Provide the address of an MQTT broker for the block to publish data to. If this variable is not set and a container on the device is named mqtt, it will publish to that instead. Either setting this or having a container named mqtt disables the internal webserver unless `ALWAYS_USE_WEBSERVER` is set to True.
-
-`ALWAYS_USE_WEBSERVER` 	Set to True to enable the internal webserver even when it is automatically disabled due to the detection of mqtt. Default value is 0.
-
+The http data defaults to only be available to other containers in the application via `sensor:7575` - if you want this to be available externally, you'll need to map port 7575 to an external port in your docker-compose file. 
 
 ## Data
 
@@ -99,7 +94,7 @@ volumes:
 services:
   influxdb:
     restart: always
-    image: arm32v7/influxdb:1.7
+    image: arm32v7/influxdb:latest
     volumes:
       - 'sense-data:/data'
   dashboard:
@@ -110,7 +105,7 @@ services:
     ports:
         - '80'
   sensor:
-    image: balenablocks/sensor:raspberrypi3 # for now use alanb128/sensor-block:latest
+    image: balenablocks/sensor
     privileged: true
     labels:
       io.balena.features.kernel-modules: '1'
