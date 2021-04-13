@@ -80,7 +80,13 @@ def background_web(server_socket):
 if __name__ == "__main__":
 
     mqtt_address = os.getenv('MQTT_ADDRESS', 'none')
-    enable_webserver = os.getenv('ALWAYS_USE_WEBSERVER', 0)
+    use_httpserver = os.getenv('ALWAYS_USE_HTTPSERVER', 0)
+    
+    if use_httpserver == "1":
+        enable_httpserver = "True"
+    else:
+        enable_httpserver = "False"
+    
 
     if mqtt_detect() and mqtt_address == "none":
         mqtt_address = "mqtt"
@@ -93,14 +99,14 @@ if __name__ == "__main__":
         except Exception as e:
             print("Error connecting to mqtt. ({0})".format(str(e)))
             mqtt_address = "none"
-            enable_webserver = "True"
+            enable_httpserver = "True"
         else:
             client.loop_start()
             balenasense = balenaSense()
     else:
-        enable_webserver = "True"
+        enable_httpserver = "True"
 
-    if enable_webserver == "True":
+    if enable_httpserver == "True":
         SERVER_HOST = '0.0.0.0'
         SERVER_PORT = 7575
 
@@ -109,7 +115,7 @@ if __name__ == "__main__":
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((SERVER_HOST, SERVER_PORT))
         server_socket.listen(1)
-        print("Web server listening on port {0}...".format(SERVER_PORT))
+        print("HTTP server listening on port {0}...".format(SERVER_PORT))
 
         t = threading.Thread(target=background_web, args=(server_socket,))
         t.start()
@@ -118,4 +124,3 @@ if __name__ == "__main__":
         if mqtt_address != "none":
             client.publish('sensor_data', json.dumps(balenasense.sample()))
         time.sleep(8)
-
