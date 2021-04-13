@@ -2,36 +2,39 @@ import os
 
 def device_transform(device_name, fields):
 
+    # Create a dict copy to work on...
+    # So we're not iterating a changing dict
+    new_fields = fields.copy()
+
     if device_name == "bme680":
         print("Transforming {0} value(s)...".format(device_name))
         for field in fields:
             if field == "humidityrelative":
-                fields["humidity"] = fields.pop("humidityrelative")
+                new_fields["humidity"] = new_fields.pop("humidityrelative")
             elif field == "temp":
                 x = fields[field]
                 if os.getenv('TEMP_UNIT', 'C') == 'F':
-                    fields[field]= ((x/1000) * 1.8) + 32
+                    new_fields[field]= ((x/1000) * 1.8) + 32
                 else:
-                    fields[field] = x/1000
-                fields["temperature"] = fields.pop("temp")
+                    new_fields[field] = x/1000
+                new_fields["temperature"] = new_fields.pop("temp")
 
     elif device_name == "bme280":
         print("Transforming {0} value(s)...".format(device_name))
         for field in fields:
             if field == "humidityrelative":
-                x = fields[field]
-                fields[field] = x/1000 
-                fields["humidity"] = fields.pop("humidityrelative")
+                new_fields[field] = fields[field]/1000
+                new_fields["humidity"] = new_fields.pop("humidityrelative")
             elif field == "temp":
                 x = fields[field]
                 if os.getenv('TEMP_UNIT', 'C') == 'F':
-                    fields[field]= ((x/1000) * 1.8) + 32
+                    new_fields[field]= ((x/1000) * 1.8) + 32
                 else:
-                    fields[field] = x/1000 
-                fields["temperature"] = fields.pop("temp")
+                    new_fields[field] = x/1000 
+                new_fields["temperature"] = new_fields.pop("temp")
             elif field == "pressure":
                 x = fields[field]
-                fields[field] = x * 10
+                new_fields[field] = x * 10
 
     elif device_name == "bmp280":
         print("Transforming {0} value(s)...".format(device_name))
@@ -39,13 +42,13 @@ def device_transform(device_name, fields):
             if field == "temp":
                 x = fields[field]
                 if os.getenv('TEMP_UNIT', 'C') == 'F':
-                    fields[field]= ((x/1000) * 1.8) + 32
+                    new_fields[field] = ((x/1000) * 1.8) + 32
                 else:
-                    fields[field] = x/1000 
-                fields["temperature"] = fields.pop("temp")
+                    new_fields[field] = x/1000
+                new_fields["temperature"] = new_fields.pop("temp")
             elif field == "pressure":
                 x = fields[field]
-                fields[field] = x * 10
+                new_fields[field] = x * 10
 
     elif device_name == "htu21":
         print("Transforming {0} value(s)...".format(device_name))
@@ -53,13 +56,13 @@ def device_transform(device_name, fields):
             if field == "temp":
                 x = fields[field]
                 if os.getenv('TEMP_UNIT', 'C') == 'F':
-                    fields[field]= ((x/1000) * 1.8) + 32
+                    new_fields[field]= ((x/1000) * 1.8) + 32
                 else:
-                    fields[field] = x/1000 
-                fields["temperature"] = fields.pop("temp")
+                    new_fields[field] = x/1000
+                new_fields["temperature"] = new_fields.pop("temp")
             if field == "humidityrelative":
                 x = fields[field]
-                fields[field] = x/1000 
-                fields["humidity"] = fields.pop("humidityrelative")
+                new_fields[field] = x/1000
+                new_fields["humidity"] = new_fields.pop("humidityrelative")
 
-    return fields
+    return new_fields
