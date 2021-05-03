@@ -53,7 +53,7 @@ This command searches the running kernel for all the drivers it includes and pri
 
 The sensor data is available in json format either as an mqtt payload and/or via the built-in webserver. To use mqtt, provide an address for the `MQTT_ADDRESS` service variable (see below.)
 
-If no mqtt address is set, the webserver will be available on port 7575. To force the webserver to be active even with mqtt, set the `ALWAYS_USE_WEBSERVER` service variable to True.
+If no mqtt address is set, the webserver will be available on port 7575. To force the webserver to be active even with mqtt, set the `ALWAYS_USE_HTTPSERVER` service variable to True.
 
 The http data defaults to only be available to other containers in the application via `sensor:7575` - if you want this to be available externally, you'll need to map port 7575 to an external port in your docker-compose file. 
 
@@ -109,7 +109,6 @@ services:
     labels:
       io.balena.features.kernel-modules: '1'
       io.balena.features.sysfs: '1'
-      io.balena.features.balena-api: '1'
     expose:
       - '7575'
   connector:
