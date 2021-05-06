@@ -6,20 +6,40 @@ import iio
 import json
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
-#from balena import Balena
 import paho.mqtt.client as mqtt
 import socket
 import threading
+import requests
 
 import idetect
 from reading import IIO_READER
 from information import Information
 
 
-# Use the sdk to get services (eventually)
 def mqtt_detect():
     
-    return False
+    # Use the supervisor api to get services
+    # See https://www.balena.io/docs/reference/supervisor/supervisor-api/
+    
+    address = os.getenv('BALENA_SUPERVISOR_ADDRESS', '')
+    api_key = os.getenv('BALENA_SUPERVISOR_API_KEY', '')
+    app_name = os.getenv('BALENA_APP_NAME', '')
+
+    url = "{0}/v2/applications/state?apikey={1}".format(address, api_key)
+
+    try:
+        r = requests.get(url).json()
+    except Exception as e:
+        print("Error looking for MQTT service: {0}".format(str(e)))
+        return False
+    else:
+        services = r[app_name]['services'].keys()
+
+        if "mqtt" in services:
+            return True
+        else:
+            return False
+    
 
 class balenaSense():
     readfrom = 'unset'
@@ -81,7 +101,14 @@ if __name__ == "__main__":
 
     mqtt_address = os.getenv('MQTT_ADDRESS', 'none')
     use_httpserver = os.getenv('ALWAYS_USE_HTTPSERVER', 0)
+    publish_interval = os.getenv('MQTT_PUB_INTERVAL', '8')
     
+    try:
+        interval = float(publish_interval)
+    except Exception as e:
+        print("Error converting MQTT_PUB_INTERVAL: Must be integer or float! Using default.")
+        interval = 8
+        
     if use_httpserver == "1":
         enable_httpserver = "True"
     else:
@@ -93,6 +120,7 @@ if __name__ == "__main__":
 
     if mqtt_address != "none":
         print("Starting mqtt client, publishing to {0}:1883".format(mqtt_address))
+        print("Using MQTT publish interval: {0} sec(s)".format(interval))
         client = mqtt.Client()
         try:
             client.connect(mqtt_address, 1883, 60)
@@ -123,4 +151,4 @@ if __name__ == "__main__":
     while True:
         if mqtt_address != "none":
             client.publish('sensor_data', json.dumps(balenasense.sample()))
-        time.sleep(8)
+        time.sleep(interval)
