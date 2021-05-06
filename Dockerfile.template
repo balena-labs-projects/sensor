@@ -10,7 +10,7 @@ RUN install_packages \
 
 WORKDIR /usr/src/app
 
-RUN pip3 install smbus2 paho-mqtt
+RUN pip3 install smbus2 paho-mqtt requests
 
 COPY *.py ./
 
