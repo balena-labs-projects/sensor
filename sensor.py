@@ -102,6 +102,7 @@ if __name__ == "__main__":
     mqtt_address = os.getenv('MQTT_ADDRESS', 'none')
     use_httpserver = os.getenv('ALWAYS_USE_HTTPSERVER', 0)
     publish_interval = os.getenv('MQTT_PUB_INTERVAL', '8')
+    publish_topic = os.getenv('MQTT_PUB_TOPIC', 'sensors')
     
     try:
         interval = float(publish_interval)
@@ -150,5 +151,5 @@ if __name__ == "__main__":
 
     while True:
         if mqtt_address != "none":
-            client.publish('sensor_data', json.dumps(balenasense.sample()))
+            client.publish(publish_topic, json.dumps(balenasense.sample()))
         time.sleep(interval)
