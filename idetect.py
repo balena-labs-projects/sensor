@@ -77,7 +77,7 @@ def read_chip_id(bus, device, loc):
     return chip_id
 
 def detect_iio_sensors():
-    bus_number = 1  # 1 indicates /dev/i2c-1
+    bus_number = int(os.getenv('BUS_NUMBER', '1'))  # default 1 indicates /dev/i2c-1
     bus = SMBus(bus_number)
     device_count = 0
     active = []
