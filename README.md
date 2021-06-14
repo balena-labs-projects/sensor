@@ -21,6 +21,7 @@ services:
     labels:
       io.balena.features.kernel-modules: '1'
       io.balena.features.sysfs: '1'
+      io.balena.features.supervisor-api: '1'
     expose:
       - '7575'  # Only needed if using  http server
 ```
