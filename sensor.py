@@ -14,6 +14,7 @@ import requests
 import idetect
 from reading import IIO_READER
 from information import Information
+from system_reading import SYSTEM_READER
 
 
 def mqtt_detect():
@@ -59,7 +60,16 @@ class balenaSense():
 
         # More sensor types can be added here
         # make sure to change the value of self.readfrom
-
+        else:
+            # System "devices" really are additive to IIO devices, not an
+            # alternative. An additive approach will require refactoring this
+            # class's attributes.
+            reader = SYSTEM_READER()
+            if reader.device_count() > 0:
+                # Doesn't have an IIO context; context is the OS/system
+                self.context = None
+                self.sensor = reader
+                self.readfrom = "system"
 
         # If this is still unset, no sensors were found; quit!
         if self.readfrom == 'unset':
@@ -71,6 +81,8 @@ class balenaSense():
             return self.apply_offsets(self.sense_hat_reading())
         elif self.readfrom == 'iio_sensors':
             return self.sensor.get_readings(self.context)
+        elif self.readfrom == 'system':
+            return self.sensor.get_readings()
         else:
             return self.sensor.get_readings(self.sensor)
 
