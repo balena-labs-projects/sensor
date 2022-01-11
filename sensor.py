@@ -123,15 +123,26 @@ if __name__ == "__main__":
         print("Starting mqtt client, publishing to {0}:1883".format(mqtt_address))
         print("Using MQTT publish interval: {0} sec(s)".format(interval))
         client = mqtt.Client()
-        try:
-            client.connect(mqtt_address, 1883, 60)
-        except Exception as e:
-            print("Error connecting to mqtt. ({0})".format(str(e)))
-            mqtt_address = "none"
-            enable_httpserver = "True"
-        else:
-            client.loop_start()
-            balenasense = balenaSense()
+        count = 0
+        DELAY = 5
+        MAX_TRIES = 3
+        while count < MAX_TRIES:
+            try:
+                count += 1
+                client.connect(mqtt_address, 1883, 60)
+            except Exception as e:
+                print("Error connecting to mqtt. ({0})".format(str(e)))
+                if count < MAX_TRIES:
+                    print("Retry in {} seconds".format(DELAY))
+                    time.sleep(DELAY)
+                else:
+                    print("Retries exhausted; not using mqtt")
+                    mqtt_address = "none"
+                    enable_httpserver = "True"
+            else:
+                client.loop_start()
+                balenasense = balenaSense()
+                break
     else:
         enable_httpserver = "True"
 
