@@ -6,7 +6,7 @@ RUN install_packages \
     kmod \
     libiio0 \
     libiio-utils \
-    python3-libiio
+    python3-libiio 
 
 WORKDIR /usr/src/app
 

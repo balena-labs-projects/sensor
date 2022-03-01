@@ -14,6 +14,7 @@ import requests
 import idetect
 from reading import IIO_READER
 from information import Information
+import requests
 
 
 def mqtt_detect():
@@ -95,7 +96,14 @@ def background_web(server_socket):
         client_connection.sendall(response.encode())
         client_connection.close()
 
-
+# sends to fleet analytics transport service
+def sent_to_fleet_analytics(endpoint_url, message):
+    try:
+        print("Sending log {} to fleet analytics at {}.".format(message, endpoint_url))
+        res = requests.post(endpoint_url, json = message)
+        print("Send status was {}".format(res))
+    except Exception as e:
+         print("Error connecting to mqtt. ({0})".format(str(e)))
 
 if __name__ == "__main__":
 
@@ -103,7 +111,10 @@ if __name__ == "__main__":
     use_httpserver = os.getenv('ALWAYS_USE_HTTPSERVER', 0)
     publish_interval = os.getenv('MQTT_PUB_INTERVAL', '8')
     publish_topic = os.getenv('MQTT_PUB_TOPIC', 'sensors')
+    publish_fleet_analytics = os.getenv('PUBLISH_FLEET_ANALYTICS', 0)
     
+    FLEET_ANALYTICS_PORT = 5000
+
     try:
         interval = float(publish_interval)
     except Exception as e:
@@ -152,4 +163,12 @@ if __name__ == "__main__":
     while True:
         if mqtt_address != "none":
             client.publish(publish_topic, json.dumps(balenasense.sample()))
+        if publish_fleet_analytics:
+            FLEET_ANALYTICS_SERVER_HOST = "0.0.0.0"
+            # just a placeholder if we end up exposing multiple transport services
+            FLEET_ANALYICS_SERVICE_NAME = "kafka-rest"
+            sent_to_fleet_analytics("{}:{}/{}".format(FLEET_ANALYTICS_SERVER_HOST, FLEET_ANALYTICS_PORT, FLEET_ANALYICS_SERVICE_NAME), 
+                json.dumps(balenasense.sample()))
+
         time.sleep(interval)
+
