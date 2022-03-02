@@ -1,7 +1,7 @@
 name: sensor
 description: >-
   detect and publish data from supported i2c sensors on the Raspberry Pi via http and/or mqtt
-version: 1.0.0
+version: 1.0.1
 type: sw.application
 assets:
   repository:

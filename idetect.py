@@ -26,6 +26,7 @@ devices = {
 73:     "ti-ads1015",
 74:     "ti-ads1015",
 75:     "ti-ads1015",
+88:     "sgp30",
 104:    "mcp3422",
 105:    "mcp3422",
 106:    "mcp3422",
@@ -48,6 +49,7 @@ del_drivers = {
 "htu21": "htu21",
 "mcp320x": "mcp320x",
 "mcp3422": "mcp3422",
+"sgp30": "sgp30",
 "ti-ads1015": "ti-ads1015",
 "tsl4531": "tsl4531",
 "veml6070": "veml6070"

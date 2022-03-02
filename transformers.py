@@ -65,4 +65,17 @@ def device_transform(device_name, fields):
                 new_fields[field] = x/1000
                 new_fields["humidity"] = new_fields.pop("humidityrelative")
 
+    elif device_name == "sgp30":
+        print("Transforming {0} value(s)...".format(device_name))
+        for field in fields:
+            if field == "concentration_co2":
+                x = fields[field]
+                new_fields[field] = x*1000000
+            elif field == "concentration_voc":
+                x = fields[field]
+                new_fields[field] = x*1000000000
+            elif ((field == "concentration_ethanol") or (field == "concentration_h2")):
+                # both values not correct as driver does not calibrate them, so remove them
+                new_fields.pop(field)
+
     return new_fields

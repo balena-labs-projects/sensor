@@ -48,6 +48,7 @@ This command searches the running kernel for all the drivers it includes and pri
 | ADS1015 | Texas Instruments ADS1015 ADC | ti-ads1015 | 0x48 - 0x4B | Yes, NOT working |
 | TSL4531 | TAOS TSL4531 ambient light sensors | tsl4531 | 0x29 | Not tested |
 | VEML6070 | VEML6070 UV A light sensor | veml6070 | 0x38, 0x39 | Yes, works |
+| SGP30 | Sensirion SGP30 Air Quality Sensor | sgp30 | 0x58 | Yes, works partially (no H2 & Ethanol reading) | 
 
 By default, the block searches for sensors on SMBus number 1 (/dev/i2c-1) however you can set the bus number (an integer value) using the `BUS_NUMBER` service variable.
 
