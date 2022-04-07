@@ -2,7 +2,8 @@
 import sys
 import errno
 import os
-import iio
+# 2021-12-16 kb2ma Hide references to IIO so don't have to install it for testing
+#import iio
 import json
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -11,35 +12,38 @@ import socket
 import threading
 import requests
 
-import idetect
+# 2021-12-16 kb2ma Hide references to IIO so don't have to install it for testing
+#import idetect
 from reading import IIO_READER
 from information import Information
 from system_reading import SYSTEM_READER
 
 
 def mqtt_detect():
+    # 2021-12-16 kb2ma Assume MQTT present for testing so runs on non-balena systems
+    return True
     
     # Use the supervisor api to get services
     # See https://www.balena.io/docs/reference/supervisor/supervisor-api/
     
-    address = os.getenv('BALENA_SUPERVISOR_ADDRESS', '')
-    api_key = os.getenv('BALENA_SUPERVISOR_API_KEY', '')
-    app_name = os.getenv('BALENA_APP_NAME', '')
+    #address = os.getenv('BALENA_SUPERVISOR_ADDRESS', '')
+    #api_key = os.getenv('BALENA_SUPERVISOR_API_KEY', '')
+    #app_name = os.getenv('BALENA_APP_NAME', '')
 
-    url = "{0}/v2/applications/state?apikey={1}".format(address, api_key)
+    #url = "{0}/v2/applications/state?apikey={1}".format(address, api_key)
 
-    try:
-        r = requests.get(url).json()
-    except Exception as e:
-        print("Error looking for MQTT service: {0}".format(str(e)))
-        return False
-    else:
-        services = r[app_name]['services'].keys()
+    #try:
+    #    r = requests.get(url).json()
+    #except Exception as e:
+    #    print("Error looking for MQTT service: {0}".format(str(e)))
+    #    return False
+    #else:
+    #    services = r[app_name]['services'].keys()
 
-        if "mqtt" in services:
-            return True
-        else:
-            return False
+    #    if "mqtt" in services:
+    #        return True
+    #    else:
+    #        return False
     
 
 class balenaSense():
@@ -47,8 +51,10 @@ class balenaSense():
 
     def __init__(self):
         print("Initializing sensors...")
+        # 2021-12-16 kb2ma Hide references to IIO so don't have to install it for testing
         # First, use iio to detect supported sensors
-        self.device_count = idetect.detect_iio_sensors()
+        #self.device_count = idetect.detect_iio_sensors()
+        self.device_count = 0
 
         if self.device_count > 0:
             self.readfrom = "iio_sensors"
@@ -89,7 +95,9 @@ class balenaSense():
 
 def _create_context():
 
-    return iio.Context()
+    # 2021-12-16 kb2ma Hide references to IIO so don't have to install it for testing
+    #return iio.Context()
+    pass
 
 # Simple webserver
 def background_web(server_socket):
@@ -174,5 +182,7 @@ if __name__ == "__main__":
 
     while True:
         if mqtt_address != "none":
-            client.publish(publish_topic, json.dumps(balenasense.sample()))
+            sample = balenasense.sample()
+            print("publishing sample: {}", sample)
+            client.publish(publish_topic, json.dumps(sample))
         time.sleep(interval)
