@@ -74,14 +74,14 @@ class WifiReader:
                         if m_link.group('quality'):
                             m_quality = re.search(quality_re, lines[i])
                             if m_quality:
-                                if_dict['quality_value'] = m_quality.group('quality_value')
+                                if_dict['quality_value'] = int(m_quality.group('quality_value'))
                                 # test for quality_max; expect None if not found
                                 if m_quality.group('quality_max'):
-                                    if_dict['quality_max'] = m_quality.group('quality_max')
+                                    if_dict['quality_max'] = int(m_quality.group('quality_max'))
                         if m_link.group('signal'):
                             m_signal = re.search(signal_re, lines[i])
                             if m_signal:
-                                if_dict['signal_level'] = m_signal.group('signal_level')
+                                if_dict['signal_level'] = float(m_signal.group('signal_level'))
                         # only 1 link line, so break to outer loop
                         break
                     else:
