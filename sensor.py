@@ -100,6 +100,8 @@ def background_web(server_socket):
 if __name__ == "__main__":
 
     mqtt_address = os.getenv('MQTT_ADDRESS', 'none')
+    mqtt_username = os.getenv('MQTT_USERNAME', '')
+    mqtt_password = os.getenv('MQTT_PASSWORD', '')
     use_httpserver = os.getenv('ALWAYS_USE_HTTPSERVER', 0)
     publish_interval = os.getenv('MQTT_PUB_INTERVAL', '8')
     publish_topic = os.getenv('MQTT_PUB_TOPIC', 'sensors')
@@ -123,6 +125,10 @@ if __name__ == "__main__":
         print("Starting mqtt client, publishing to {0}:1883".format(mqtt_address))
         print("Using MQTT publish interval: {0} sec(s)".format(interval))
         client = mqtt.Client()
+
+        if mqtt_username != "":
+            client.username_pw_set(mqtt_username, mqtt_password)
+
         try:
             client.connect(mqtt_address, 1883, 60)
         except Exception as e:
