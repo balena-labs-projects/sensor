@@ -12,7 +12,7 @@ from transformers import device_transform
 class Reading:
     """Class for retrieving readings from devices."""
 
-    def __init__(self, context):
+    def __init__(self, context: iio.Context):
         """
         Class constructor.
         Args:
@@ -69,7 +69,7 @@ class Reading:
 
         return reading
 
-    def _device_read(self, dev):
+    def _device_read(self, dev: iio.Device):
         reads = {}
 
         for channel in dev.channels:
@@ -87,7 +87,7 @@ class Reading:
         return reads
 
     @staticmethod
-    def _channel_attribute_value(channel, channel_attr):
+    def _channel_attribute_value(channel: iio.Channel, channel_attr: str):
         v = 0
         try:
             v = channel.attrs[channel_attr].value
@@ -97,10 +97,9 @@ class Reading:
         return v
 
 class IIO_READER:
-    data = None
-
+    
     def __init__(self):
-        print("initializing reading")
+        print("Initializing IIO reader...")
 
     def get_readings(self, context):
         reading = Reading(context)

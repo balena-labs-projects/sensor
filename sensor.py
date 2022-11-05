@@ -46,17 +46,17 @@ class balenaSense():
 
     def __init__(self):
         print("Initializing sensors...")
+        self.context = _create_context()
+        self.sensor = IIO_READER()
+        # Print the iio info
+        information = Information(self.context)
+        information.print_information()
+
         # First, use iio to detect supported sensors
-        self.device_count = idetect.detect_iio_sensors()
+        self.device_count = idetect.detect_sensors(self.context)
 
         if self.device_count > 0:
             self.readfrom = "iio_sensors"
-            self.context = _create_context()
-            self.sensor = IIO_READER()
-            # Print the iio info
-            information = Information(self.context)
-            information.write_information()
-
         # More sensor types can be added here
         # make sure to change the value of self.readfrom
 
@@ -103,6 +103,8 @@ if __name__ == "__main__":
     use_httpserver = os.getenv('ALWAYS_USE_HTTPSERVER', 0)
     publish_interval = os.getenv('MQTT_PUB_INTERVAL', '8')
     publish_topic = os.getenv('MQTT_PUB_TOPIC', 'sensors')
+    mqtt_client = None
+    balenasense = None
     
     try:
         interval = float(publish_interval)
@@ -122,15 +124,15 @@ if __name__ == "__main__":
     if mqtt_address != "none":
         print("Starting mqtt client, publishing to {0}:1883".format(mqtt_address))
         print("Using MQTT publish interval: {0} sec(s)".format(interval))
-        client = mqtt.Client()
+        mqtt_client = mqtt.Client()
         try:
-            client.connect(mqtt_address, 1883, 60)
+            mqtt_client.connect(mqtt_address, 1883, 60)
         except Exception as e:
             print("Error connecting to mqtt. ({0})".format(str(e)))
             mqtt_address = "none"
             enable_httpserver = "True"
         else:
-            client.loop_start()
+            mqtt_client.loop_start()
             balenasense = balenaSense()
     else:
         enable_httpserver = "True"
@@ -150,6 +152,6 @@ if __name__ == "__main__":
         t.start()
 
     while True:
-        if mqtt_address != "none":
-            client.publish(publish_topic, json.dumps(balenasense.sample()))
+        if mqtt_client is not None and balenasense is not None:
+            mqtt_client.publish(publish_topic, json.dumps(balenasense.sample()))
         time.sleep(interval)
