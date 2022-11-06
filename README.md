@@ -48,6 +48,10 @@ This command searches the running kernel for all the drivers it includes and pri
 | ADS1015 | Texas Instruments ADS1015 ADC | ti-ads1015 | 0x48 - 0x4B | Yes, NOT working |
 | TSL4531 | TAOS TSL4531 ambient light sensors | tsl4531 | 0x29 | Not tested |
 | VEML6070 | VEML6070 UV A light sensor | veml6070 | 0x38, 0x39 | Yes, works |
+| DHT11 | DHT11/DHT22/AM2302 | dht11 | N/A | Yes, works (with overlay) |
+
+_"With overlay" means that the device tree overlay has to be enabled at boot time. This is done using the "Define DT overlays" option in the device configuration page on balenaCloud."_
+_Devices with no address are not available on the SMbus and can only be detected in `IIO*` modes_
 
 There are different sensor search modes currently supported, and they are set using the `DETECT_SENSORS` service variable:
 - `I2C` (default) - Searches only the SMBus
