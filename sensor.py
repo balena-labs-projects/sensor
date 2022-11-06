@@ -29,17 +29,16 @@ def mqtt_detect():
 
     try:
         r = requests.get(url).json()
-    except Exception as e:
-        print("Error looking for MQTT service: {0}".format(str(e)))
-        return False
-    else:
         services = r[app_name]['services'].keys()
+        print("Supervisor response: {0}".format(str(r)))
 
         if "mqtt" in services:
             return True
         else:
             return False
-    
+    except Exception as e:
+        print("Error looking for MQTT service: {0}".format(str(e)))
+        return False
 
 class balenaSense():
     readfrom = 'unset'
@@ -118,7 +117,7 @@ if __name__ == "__main__":
         enable_httpserver = "False"
     
 
-    if mqtt_detect() and mqtt_address == "none":
+    if mqtt_address == "none" and mqtt_detect():
         mqtt_address = "mqtt"
 
     if mqtt_address != "none":
