@@ -50,7 +50,7 @@ def device_transform(device_name: str, fields: dict) -> dict:
                 val = fields[field]
                 new_fields[field] = val * 10
 
-    elif device_name == "htu21" or device_name == "dht11":
+    elif device_name == "htu21" or "dht11" in device_name:
         print("Transforming {0} value(s)...".format(device_name))
         for field in fields:
             if field == "temp":

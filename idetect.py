@@ -245,7 +245,7 @@ def detect_iio_sensors(
 
     if strict:
         for device in context.devices:
-            if device.name in supported_devices:
+            if device.name.split('@')[0] in supported_devices:
                 nr_devices += 1
     else:
         nr_devices = len(context.devices)
