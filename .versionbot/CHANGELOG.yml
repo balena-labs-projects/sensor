@@ -1,0 +1,44 @@
+- commits:
+    - subject: moving from balenablocks to balena-labs-projects
+      hash: fc6c8e485ecb0b3d9678c46b8bb355ec56da6190
+      body: ""
+      footer:
+        Signed-off-by: Flynn Joffray <flynn@balena.io>
+        signed-off-by: Flynn Joffray <flynn@balena.io>
+        Change-type: patch
+        change-type: patch
+      author: Flynn Joffray
+      nested: []
+    - subject: Pizero build script
+      hash: 7a516d1a425bb24eb51f3e4c4ce292cc32c34093
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Phil Wilson <phil@balena.io>
+        signed-off-by: Phil Wilson <phil@balena.io>
+      author: Phil Wilson
+      nested: []
+    - subject: Add repo file
+      hash: ea6d8d13ba795cea380c4e4e055bff93ac56bb2d
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Phil Wilson <phil@balena.io>
+        signed-off-by: Phil Wilson <phil@balena.io>
+      author: Phil Wilson
+      nested: []
+    - subject: Added build script
+      hash: 25936ce0f9d86faf983e2f6f6b8e7af0811b24e5
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Phil Wilson <phil@balena.io>
+        signed-off-by: Phil Wilson <phil@balena.io>
+      author: Phil Wilson
+      nested: []
+  version: 0.0.2
+  title: ""
+  date: 2022-11-16T01:55:48.321Z
