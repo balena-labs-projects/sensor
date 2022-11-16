@@ -1,7 +1,7 @@
 version: '2'
 services:
   sensor:
-    image: balenablocks/sensor
+    image: bh.cr/balenalabs/sensor
     privileged: true
     labels:
       io.balena.features.kernel-modules: '1'

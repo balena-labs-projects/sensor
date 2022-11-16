@@ -32,7 +32,7 @@ function create_and_push_manifest() {
 }
 
 # YOu can pass in a repo (such as a test docker repo) or accept the default
-DOCKER_REPO=${1:-balenablocks}
+DOCKER_REPO=${1:-bh.cr/balenalabs}
 
 build_and_push_image $DOCKER_REPO "raspberry-pi" "linux/arm/v6" "rpi"
 build_and_push_image $DOCKER_REPO "raspberrypi4-64" "linux/arm64" "aarch64"

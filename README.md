@@ -16,7 +16,7 @@ To use this image, create a container in your `docker-compose.yml` file as shown
 ```
 services:
   sensor:
-    image: balenablocks/sensor
+    image: bh.cr/balenalabs/sensor-<arch>
     privileged: true
     labels:
       io.balena.features.kernel-modules: '1'
@@ -53,11 +53,11 @@ By default, the block searches for sensors on SMBus number 1 (/dev/i2c-1) howeve
 
 ### Publishing Data
 
-The sensor data is available in json format either as an mqtt payload and/or via the built-in http server. If you include an mqtt broker container named "mqtt" in your application, the block will automatically publish to that. If you provide an address for the `MQTT_ADDRESS` service variable, it will publish to that broker instead. The default interval for publishing data is eight seconds, which you can override with the `MQTT_PUB_INTERVAL` service variable by providing a value in seconds. The default topic is set to `sensors` (which is compatible with the [connector block](https://github.com/balenablocks/connector#mqtt) ) which can be overridden by setting the `MQTT_PUB_TOPIC` service variable. 
+The sensor data is available in json format either as an mqtt payload and/or via the built-in http server. If you include an mqtt broker container named "mqtt" in your application, the block will automatically publish to that. If you provide an address for the `MQTT_ADDRESS` service variable, it will publish to that broker instead. The default interval for publishing data is eight seconds, which you can override with the `MQTT_PUB_INTERVAL` service variable by providing a value in seconds. The default topic is set to `sensors` (which is compatible with the [connector block](https://github.com/balena-labs-projects/connector#mqtt) ) which can be overridden by setting the `MQTT_PUB_TOPIC` service variable.
 
 If no mqtt broker is set, the http server will be available on port 7575. To force the http server to be active even with mqtt, set the `ALWAYS_USE_HTTPSERVER` service variable to True.
 
-The http data defaults to only be available to other containers in the application via `sensor:7575` - if you want this to be available externally, you'll need to map port 7575 to an external port in your docker-compose file. 
+The http data defaults to only be available to other containers in the application via `sensor:7575` - if you want this to be available externally, you'll need to map port 7575 to an external port in your docker-compose file.
 
 ## Data
 
@@ -83,8 +83,8 @@ Here is the transformed output with `RAW_VALUES` set to `0`:
 
 When using transformed data outputs, you can change the temperature field from Celsius to Farenheit by setting the `TEMP_UNIT` variable to `F` (the default is `C`)
 
-Note that the device's short UUID is always included in the data output, which can be useful for aggregating data from multiple devices. The short UUID is a string value so it will not show up in Grafana dashboards based on the [dashboard block](https://github.com/balenablocks/dashboard).
+Note that the device's short UUID is always included in the data output, which can be useful for aggregating data from multiple devices. The short UUID is a string value so it will not show up in Grafana dashboards based on the [dashboard block](https://github.com/balena-labs-projects/dashboard).
 
 ## Use with other blocks
 
-The sensor block works well with our [connector block](https://github.com/balenablocks/connector) and [dashboard block](https://github.com/balenablocks/dashboard). See the latest version of [balenaSense](https://github.com/balenalabs/balena-sense) for an example of using all of these blocks together to read data from one or more sensor.
+The sensor block works well with our [connector block](https://github.com/balena-labs-projects/connector) and [dashboard block](https://github.com/balena-labs-projects/dashboard). See the latest version of [balenaSense](https://github.com/balena-labs-projects/balena-sense) for an example of using all of these blocks together to read data from one or more sensor.
