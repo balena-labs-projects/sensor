@@ -7,11 +7,11 @@ assets:
   repository:
     type: blob.asset
     data:
-      url: 'https://github.com/balenablocks/sensor'
+      url: 'https://github.com/balena-labs-projects/sensor'
   logo:
     type: blob.asset
     data:
-      url: 'https://raw.githubusercontent.com/balenablocks/sensor/master/logo.png'
+      url: 'https://raw.githubusercontent.com/balena-labs-projects/sensor/master/logo.png'
 data:
   defaultDeviceType: raspberrypi3
   supportedDeviceTypes:
