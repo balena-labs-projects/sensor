@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix typo, force rebuild
+      hash: 11a6966c04819369b19d74a6941fd86d706f4b85
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Alan Boris
+      nested: []
+  version: 0.0.3
+  title: ""
+  date: 2023-07-21T00:20:16.516Z
+- commits:
     - subject: moving from balenablocks to balena-labs-projects
       hash: fc6c8e485ecb0b3d9678c46b8bb355ec56da6190
       body: ""
