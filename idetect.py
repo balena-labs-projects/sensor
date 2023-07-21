@@ -111,7 +111,7 @@ def detect_iio_sensors():
                 print("Found device (via i2cdetect) at 0x40")
     if device_count > 0:
         # We want to remove any existing devices if they are present
-        # First unintatntiate the i2c bus
+        # First uninstantiate the i2c bus
         print("======== Removing existing devices from the i2c bus... ========")
         for device in active:
             print("Deleting device found at {0}.".format(hex(device)))
