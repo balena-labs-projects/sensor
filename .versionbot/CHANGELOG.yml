@@ -1,4 +1,16 @@
 - commits:
+    - subject: Delete docker-compose.yml
+      hash: e6cf9d84277f33ed4a3f28bf88c82e28b697da57
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Alan Boris
+      nested: []
+  version: 0.0.4
+  title: ""
+  date: 2023-07-21T04:59:25.633Z
+- commits:
     - subject: Fix typo, force rebuild
       hash: 11a6966c04819369b19d74a6941fd86d706f4b85
       body: ""
