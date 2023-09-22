@@ -5,11 +5,12 @@ from smbus2 import SMBus
 import errno
 import os
 import iio
-import json
 import time
+import iio
+from typing import Set, Dict
 
 # Decimal address values
-devices = {
+i2c_devices: Dict[int,str] = {
 12:     "ad5446",
 13:     "ad5446",
 14:     "ad5446",
@@ -38,12 +39,18 @@ devices = {
 119:    "multiple"
 }
 
+# List of supported iio devices (superset of i2c devices)
+iio_device_names: Set[str] = {
+    "dht11", # Also applies to the DHT22
+    *set(i2c_devices.values())
+}
+
 del_drivers = {
 "ad5446.c": "ad5446.c",
 "apds9960": "apds9960",
 "bme680": "bme680-i2c",
 "bmp280": "bmp280-i2c",
-"dht11": "dht11",
+#"dht11": "dht11",
 "hdc100": "hdc100",
 "htu21": "htu21",
 "mcp320x": "mcp320x",
@@ -76,7 +83,7 @@ def read_chip_id(bus, device, loc):
 
     return chip_id
 
-def detect_iio_sensors():
+def detect_i2c_sensors():
     bus_number = int(os.getenv('BUS_NUMBER', '1'))  # default 1 indicates /dev/i2c-1
     bus = SMBus(bus_number)
     device_count = 0
@@ -123,7 +130,7 @@ def detect_iio_sensors():
         print("======== Unloading any existing modules... ========")
         # Next unload any present devices using modprobe -rv
         output = subprocess.check_output("lsmod").decode()  # TODO: replace check_output with run variant
-        d = []
+        active_modules = set()
         i = 0
         for line in output.split('\n'):
             i = i + 1
@@ -136,13 +143,10 @@ def detect_iio_sensors():
                         mod_name = lsmod_module[0][0:find_underscore]  # strip underscore and everything following
                     else:
                         mod_name = lsmod_module[0]
-                    d.append(mod_name)
-        # remove duplicates from list
-        dd = []
-        [dd.append(x) for x in d if x not in dd]
+                    active_modules.add(mod_name)
         # find in dict
         #print("Currently loaded modules: {0}".format(dd))
-        for x in dd:
+        for x in active_modules:
             if x in del_drivers:
                 print("Unloading module {0} as {1}.".format(x, del_drivers[x]))
                 subprocess.run(["modprobe", "-r", x])
@@ -152,7 +156,7 @@ def detect_iio_sensors():
         #print("Keys: {0}".format(devices.keys()))
         new_active = []
         for x in active:
-            if x in devices.keys():
+            if x in i2c_devices.keys():
                 new_active.append(x)
             else:
                 print("Device at {0} not in known supported drivers.".format(hex(x)))
@@ -165,10 +169,10 @@ def detect_iio_sensors():
         subprocess.run(["modprobe", "industrialio"])
         new_active_count = 0
         for device in new_active:
-            if devices[device] != "multiple":
-                print("Loading device {0} on address {1}.".format(devices[device], hex(device)))
-                subprocess.run(["modprobe", devices[device]])
-                new_device = "echo {0} {1} > /sys/bus/i2c/devices/i2c-1/new_device".format(devices[device], hex(device))
+            if i2c_devices[device] != "multiple":
+                print("Loading device {0} on address {1}.".format(i2c_devices[device], hex(device)))
+                subprocess.run(["modprobe", i2c_devices[device]])
+                new_device = "echo {0} {1} > /sys/bus/i2c/devices/i2c-1/new_device".format(i2c_devices[device], hex(device))
                 os_out = os.system(new_device)
                 if os_out > 0:
                     print("New device {0} exit code: {1}".format(hex(device), os_out))
@@ -221,3 +225,43 @@ def detect_iio_sensors():
         bus = None
         return 0
     
+def detect_iio_sensors(
+    strict: bool,
+    context: iio.Context,
+    supported_devices: Set[str] = iio_device_names
+) -> int:
+    """Fetches number of iio (supported) devices inside the iio context.
+
+    Args:
+        strict (bool): Return only the number of detected devices whose names are in supported_devices
+        context (iio.Context): iio Context
+        supported_devices(Set[str]): Names of supported devices
+
+    Returns:
+        int: Nr of (supported) iio devices detected.
+    """
+
+    nr_devices = 0
+
+    if strict:
+        for device in context.devices:
+            if device.name.split('@')[0] in supported_devices:
+                nr_devices += 1
+    else:
+        nr_devices = len(context.devices)
+    
+    return nr_devices
+
+def detect_sensors(context: iio.Context) -> int:
+    detection_mode = os.getenv("DETECT_SENSORS", "I2C")
+    print("Sensor detection mode: {0}".format(detection_mode))
+
+    if detection_mode == "I2C":
+        return detect_i2c_sensors()
+    elif detection_mode == "IIO_STRICT":
+        return detect_iio_sensors(True, context)
+    elif detection_mode == "IIO":
+        return detect_iio_sensors(False, context)
+    else:
+        print("Unknown value for env variable DETECT_SENSORS: {0}".format(detection_mode))
+        return 0

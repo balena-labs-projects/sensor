@@ -26,8 +26,8 @@ class Information:
         """
         self.context = context
 
-    def write_information(self):
-        """Write the information about the current context."""
+    def print_information(self):
+        """Print the information about the current context."""
         self._context_info()
 
     def _context_info(self):
